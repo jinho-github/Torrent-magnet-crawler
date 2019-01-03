@@ -14,7 +14,7 @@ def imageView():
 def mgnetBt():
     try:
         clicked_items = List1.curselection()
-        clicked_items_num = clicked_items[0] + 1
+        clicked_items_num = clicked_items[0] + 2
        
         mglink = mglist[clicked_items_num]
         webbrowser.open("magnet:?xt=urn:btih:"+mglink)
