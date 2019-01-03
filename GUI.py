@@ -14,8 +14,9 @@ def imageView():
 def mgnetBt():
     try:
         clicked_items = List1.curselection()
-        clicked_items_num = clicked_items[0] + 2
-       
+        clicked_items_num = clicked_items[0]
+        print(clicked_items_num)
+        
         mglink = mglist[clicked_items_num]
         webbrowser.open("magnet:?xt=urn:btih:"+mglink)
     except:
@@ -41,12 +42,14 @@ def searchBt(self):
     for link2 in soup.find_all(name="td",attrs={"class":"num"}):
         try:
             mgnet = link2.select('a')[0]['href'] #a 태그에서 href만 가져오기
+            mgnet = mgnet.strip("javascript:Mag_dn('')") #문자열 자르기
+            mglist.append(str(mgnet)) #리스트에 넣기
+            
         except:
             pass
                 #print("href 없음")
-        mgnet = mgnet.strip("javascript:Mag_dn('')") #문자열 자르기
-        mglist.append(str(mgnet)) #리스트에 넣기
-            
+        
+    
     #List1.insert(1,mtext)
 mGui = Tk()
 ment = StringVar()
