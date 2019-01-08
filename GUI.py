@@ -24,6 +24,7 @@ def mgnetBt():
         
 def searchBt(self):
     List1.delete(0, 20)
+    List2.delete(0, 20)
     mtext = ment.get()
     search = urllib.parse.quote(mtext) #URL Encoding
     req = Request('https://torrentwal.net/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
@@ -48,12 +49,35 @@ def searchBt(self):
         except:
             pass
                 #print("href 없음")
+    req2 = Request('https://series.naver.com/search/search.nhn?t=all&fs=broadcasting&q='+str(search), headers={'User-Agent': 'Mozilla/5.0'})
+    webpage2 = urlopen(req2).read()
+    soup2 = BeautifulSoup(webpage2,"lxml")
+    for link3 in soup2.find(name="div",attrs={"class":"cont"}):
+        try:
+            title = link3.select('a')[0]['href'] #a태그중 0다음인 1번째 데이터 가져오기
+            req3 = Request('https://series.naver.com'+str(title), headers={'User-Agent': 'Mozilla/5.0'})
+            webpage3 = urlopen(req3).read()
+            soup3 = BeautifulSoup(webpage3,"lxml")
+            num2 = 0 #초기값
+            for link4 in soup3.find_all(name="td",attrs={"class":"serieslist"}):
+                try:
+                    num2 = num2+1
+                    data = link4.select('div')
+                    data = str(data)
+                    data = data.strip("[<div><strong></div>]")
+                    data = data.replace("</strong>","")
+                    data = data.replace("<br/>","")
+                    List2.insert(num2, data)
+                    print(data)
+                except:
+                        pass
+        except:
+                pass
         
-    
     #List1.insert(1,mtext)
 mGui = Tk()
 ment = StringVar()
-mGui.geometry('750x450')
+mGui.geometry('750x650')
 mGui.title("마그넷 검색기")
 
 mlabel = Label(text='제작 : jinho021712@gmail.com').pack()
@@ -66,7 +90,10 @@ mbutton = Button(mGui, text = '다운로드', command = mgnetBt, width = 92).pac
 List1 = Listbox(mGui, width = 92)
 #List1.bind("<Button-1>", imageView)
 List1.pack()
-mlabel = Label(text='Ver1.0').pack()
+mlabel = Label(text='방송회차정보 (클릭해서 정보를 확인하세요.)').pack()
+List2 = Listbox(mGui, width = 92)
+List2.pack()
+mlabel = Label(text='Ver2.0').pack()
 #mbutton = Button(mGui, text = '미리보기', command = imageView, width = 92).pack()
 #canvas = Canvas(mGui, width = 750, height = 450,bg = "blue").pack()
 
