@@ -7,15 +7,17 @@ import tkinter.messagebox
 from tkinter import *
 
 
-def imageView():
-    clicked_items = List1.curselection()
-    print(List1.get(clicked_items))
+def InfoList():
+        clicked_items = List2.curselection()
+        clicked_items_num = clicked_items[0]
+        #print(clicked_items_num)
+        tkinter.messagebox.showinfo('안내',datalist[clicked_items_num])
         
 def mgnetBt():
     try:
         clicked_items = List1.curselection()
         clicked_items_num = clicked_items[0]
-        print(clicked_items_num)
+        #print(clicked_items_num)
         
         mglink = mglist[clicked_items_num]
         webbrowser.open("magnet:?xt=urn:btih:"+mglink)
@@ -68,9 +70,18 @@ def searchBt(self):
                     data = data.replace("</strong>","")
                     data = data.replace("<br/>","")
                     List2.insert(num2, data)
-                    print(data)
                 except:
                         pass
+            global datalist
+            datalist = [] * num2 #리스트 생성
+            for link5 in soup3.find_all(name="td",attrs={"class":"summary"}):
+                try:
+                    dataSt = link5.select('a')[0]
+                    dataSt = dataSt.get_text()
+                    datalist.append(str(dataSt)) #리스트에 넣기
+                except:
+                        pass
+            #print(datalist)
         except:
                 pass
         
@@ -90,7 +101,7 @@ mbutton = Button(mGui, text = '다운로드', command = mgnetBt, width = 92).pac
 List1 = Listbox(mGui, width = 92)
 #List1.bind("<Button-1>", imageView)
 List1.pack()
-mlabel = Label(text='방송회차정보 (클릭해서 정보를 확인하세요.)').pack()
+mbutton2 = Button(mGui, text = '방송회차정보 (클릭해서 정보를 확인하세요.)', command = InfoList, width = 92).pack()
 List2 = Listbox(mGui, width = 92)
 List2.pack()
 mlabel = Label(text='Ver2.0').pack()
