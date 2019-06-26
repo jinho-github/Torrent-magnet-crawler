@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 import sys
 import tkinter.messagebox
 from tkinter import *
+import ssl
+context = ssl._create_unverified_context()
 
 
 def InfoList():
@@ -29,9 +31,9 @@ def searchBt(self):
     List2.delete(0, 20)
     mtext = ment.get()
     search = urllib.parse.quote(mtext) #URL Encoding
-    req = Request('https://torrentwal.net/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
-    webpage = urlopen(req).read()
-    soup = BeautifulSoup(webpage,"lxml")
+    req = Request('https://torrentwal.com/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req, context=context)
+    soup = BeautifulSoup(webpage.read(),"html.parser")
     num = 0  #num 초기값
     for link1 in soup.find_all(name="td",attrs={"class":"subject"}):
         try:
@@ -52,14 +54,14 @@ def searchBt(self):
             pass
                 #print("href 없음")
     req2 = Request('https://series.naver.com/search/search.nhn?t=all&fs=broadcasting&q='+str(search), headers={'User-Agent': 'Mozilla/5.0'})
-    webpage2 = urlopen(req2).read()
-    soup2 = BeautifulSoup(webpage2,"lxml")
+    webpage2 = urlopen(req2, context=context)
+    soup2 = BeautifulSoup(webpage2.read(),"html.parser")
     for link3 in soup2.find(name="div",attrs={"class":"cont"}):
         try:
             title = link3.select('a')[0]['href'] #a태그중 0다음인 1번째 데이터 가져오기
             req3 = Request('https://series.naver.com'+str(title), headers={'User-Agent': 'Mozilla/5.0'})
-            webpage3 = urlopen(req3).read()
-            soup3 = BeautifulSoup(webpage3,"lxml")
+            webpage3 = urlopen(req3, context=context)
+            soup3 = BeautifulSoup(webpage3.read(),"html.parser")
             num2 = 0 #초기값
             for link4 in soup3.find_all(name="td",attrs={"class":"serieslist"}):
                 try:
@@ -76,8 +78,10 @@ def searchBt(self):
             datalist = [] * num2 #리스트 생성
             for link5 in soup3.find_all(name="td",attrs={"class":"summary"}):
                 try:
-                    dataSt = link5.select('a')[0]
+                    dataSt = link5.select('div')[0]
                     dataSt = dataSt.get_text()
+                    #dataSt2 = link5.select('div')
+                    #print(dataSt2)
                     datalist.append(str(dataSt)) #리스트에 넣기
                 except:
                         pass
