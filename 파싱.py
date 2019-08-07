@@ -7,7 +7,7 @@ while 1:
     try:
         search = input("검색어를 입력하세요 : " ) 
         search = urllib.parse.quote(search) #URL Encoding
-        req = Request('https://torrentwal.net/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
+        req = Request('https://torrentwal.com/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(req).read()
         soup = BeautifulSoup(webpage,"lxml")
         num = 0  #num 초기값
