@@ -17,3 +17,8 @@ https://yeowool0217.tistory.com/515?category=792795 (파싱.py)
 
 ![alt text](https://t1.daumcdn.net/cfile/tistory/99D14B365C3F70D704)                     
 https://yeowool0217.tistory.com/516?category=792795 (GUI.py)                                    
+                                                                            
+
+Creator
+----------
+이진호([github](http://github.com/Yeowoolee), [티스토리](http://yeowool0217.tistory.com))
