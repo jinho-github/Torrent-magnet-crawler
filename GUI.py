@@ -2,6 +2,7 @@ import webbrowser
 import urllib.parse
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+import selenium.webdriver as webdriver
 import sys
 import tkinter.messagebox
 from tkinter import *
@@ -22,32 +23,40 @@ def mgnetBt():
         #print(clicked_items_num)
         
         mglink = mglist[clicked_items_num]
-        webbrowser.open("magnet:?xt=urn:btih:"+mglink)
+        webbrowser.open(mglink)
     except:
         tkinter.messagebox.showinfo('안내','마그넷 주소가 존재하지 않거나 불러올 수 없습니다.')
         
 def searchBt(self):
-    List1.delete(0, 20)
-    List2.delete(0, 20)
+    List1.delete(0, 30)
+    List2.delete(0, 30)
     mtext = ment.get()
     search = urllib.parse.quote(mtext) #URL Encoding
-    req = Request('https://torrentwal.com/bbs/s.php?k='+str(search)+'&q=', headers={'User-Agent': 'Mozilla/5.0'})
-    webpage = urlopen(req, context=context)
-    soup = BeautifulSoup(webpage.read(),"html.parser")
+
+    url = 'https://torrentube.net/kt/search?p&q='+str(search)
+         
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless') 
+    driver = webdriver.Chrome(options=options)
+
+    driver.get(url)
+    driver.implicitly_wait(2)
+    pageString = driver.page_source
+    driver.quit()
+    soup = BeautifulSoup(pageString, "lxml")
     num = 0  #num 초기값
-    for link1 in soup.find_all(name="td",attrs={"class":"subject"}):
+    for link1 in soup.find_all(name="div",attrs={"class":"title"}):
         try:
-            title = link1.select('a')[1] #a태그중 0다음인 1번째 데이터 가져오기
+            title = link1.select('a')[0] 
             num = num+1
-            List1.insert(num, title.get_text().strip())
+            List1.insert(num, title.get_text())
         except:
                 pass
     global mglist
     mglist = [] * num #리스트 생성
-    for link2 in soup.find_all(name="td",attrs={"class":"num"}):
+    for link2 in soup.find_all(name="div",attrs={"class":"magnet"}):
         try:
             mgnet = link2.select('a')[0]['href'] #a 태그에서 href만 가져오기
-            mgnet = mgnet.strip("javascript:Mag_dn('')") #문자열 자르기
             mglist.append(str(mgnet)) #리스트에 넣기
             
         except:
